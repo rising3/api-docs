@@ -1,0 +1,27 @@
+---
+title: Authentication
+description: A reference page in my new Starlight docs site.
+---
+
+The Stripe API uses API keys to authenticate requests. You can view and manage your API keys in the Stripe Dashboard.
+
+Test mode secret keys have the prefix `sk_test_` and live mode secret keys have the prefix `sk_live_`. Alternatively, you can use restricted API keys for granular permissions.
+
+Your API keys carry many privileges, so be sure to keep them secure! Do not share your secret API keys in publicly accessible areas such as GitHub, client-side code, and so forth.
+
+Authentication to the API is performed via HTTP Basic Auth. Provide your API key as the basic auth username value. You do not need to provide a password.
+
+If you need to authenticate via bearer auth (e.g., for a cross-origin request), use `-H "Authorization: Bearer sk_test_09l3shTSTKHYCzzZZsiLl2vA"` instead of `-u sk_test_09l3shTSTKHYCzzZZsiLl2vA`.
+
+All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will also fail.
+
+``` bash title="AUTHENTICATED REQUEST"
+curl https://api.stripe.com/v1/charges \
+  -u sk_test_09l3shTSTKHYCzzZZsiLl2vA:
+# The colon prevents curl from asking for a password.
+```
+:::tip[YOUR API KEY]
+A sample test API key is included in all the examples here, so you can test any example right away. Do not submit any personally identifiable information in requests made with this key.
+
+To test requests using your account, replace the sample API key with your actual API key or sign in.
+:::

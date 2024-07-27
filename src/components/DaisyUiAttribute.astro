@@ -1,0 +1,43 @@
+---
+interface Props {
+  text: string;
+  type: string;
+  required?: boolean;
+  enums?: Array<{ name: string, desc?: string }>
+}
+
+const { text, type, required, enums } = Astro.props;
+---
+<details class="collapse text-base">
+  <summary class="collapse-title">
+    <span class="font-bold">{text}</span>
+    <span class="font-thin italic ml-1">{type}</span>
+    {required && (
+    <span class="badge badge-accent ml-1">Required</span>
+    )}
+  </summary>
+  <div class="collapse-content">
+    <div class="font-light"><slot/></div>
+    {enums && enums.length > 0 && (
+      <div class="grid grid-cols-1 font-base shadow-xl">
+        <div class="bg-base-300 col-span-1 p-2">Possible enum values</div>
+        <table class="table-auto col-span-1 text-wrap break-words">
+          <thead>
+            <tr>
+              <th><span class="m-2">NAME</span></th>
+              <th><span class="m-2">DESCRIPTION</span></th>
+            </tr>
+          </thead>
+          <tbody>
+          {enums.map((e) => (
+          <tr>
+            <td><span class="badge badge-ghost m-2">{e.name}</span></td>
+            <td><span class="m-2">{e.desc}</span></td>
+          </tr>
+        ))}
+        </tbody>
+      </table>
+    </div>
+    )}
+  </div>
+</details>

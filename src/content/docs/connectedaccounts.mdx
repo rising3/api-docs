@@ -1,0 +1,23 @@
+---
+title: Connected Accounts
+description: A reference page in my new Starlight docs site.
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+To act as connected accounts, clients can issue requests using the Stripe-Account special header. Make sure that this header contains a Stripe account ID, which usually starts with the acct_ prefix.
+
+The value is set per-request as shown in the adjacent code sample. Methods on the returned object reuse the same account ID.
+
+Related guide: Making API calls for connected accounts
+
+## PER-REQUEST ACCOUNT
+<Tabs>
+  <TabItem label="cURL" icon="star">
+```bash
+curl https://api.stripe.com/v1/charges/ch_3LmjFA2eZvKYlo2C09TLIsrw \
+  -u sk_test_09l3shTSTKHYCzzZZsiLl2vA: \
+  -H "Stripe-Account: acct_1032D82eZvKYlo2C" \
+  -G
+```
+  </TabItem>
+</Tabs>

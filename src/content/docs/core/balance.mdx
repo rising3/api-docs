@@ -1,0 +1,190 @@
+---
+title: Balance
+description: A reference page in my new Starlight docs site.
+---
+import { Badge, Tabs, TabItem } from '@astrojs/starlight/components';
+import Attribute from '@components/DaisyUiAttribute.astro';
+import Collapse from '@components/DaisyUiCollapse.astro';
+
+This is an object representing your Stripe balance. You can retrieve it to see the balance currently on your Stripe account.
+
+You can also retrieve the balance history, which contains a list of transactions that contributed to the balance (charges, payouts, and so forth).
+
+The available and pending amounts for each currency are broken down further by payment source types.
+
+Related guide: Understanding Connect account balances
+
+Was this section helpful?
+Yes
+No
+
+## Endpoints
+
+<div style="width:100px">METHOD</div> | <div style="width:400px">PATH</div>
+---: | ---
+GET | /v1/balance
+
+
+## The Balance Object
+
+### Attributes
+<Attribute text="available" type="array of dictionaries">
+Available funds that you can transfer or pay out automatically by Stripe or explicitly through the Transfers API or Payouts API. You can find the available balance for each currency and payment type in the source_types property.
+    <Collapse>
+        <Attribute text="available.amount" type="integer">
+        Balance amount.
+        </Attribute>
+        <Attribute text="available.currency" type="enum">
+        Three-letter ISO currency code, in lowercase. Must be a supported currency.
+        </Attribute>
+        <Attribute text="available.source_types" type="nullable dictionary">
+        Breakdown of balance by source types.
+            <Collapse>
+                <Attribute text="available.source_types.bank_account" type="nullable integer">
+                Amount for bank account.
+                </Attribute>
+                <Attribute text="available.source_types.bank_card" type="nullable integer">
+                Amount for card.
+                </Attribute>
+                <Attribute text="available.source_types.bank_fpx" type="nullable integer">
+                Amount for FPX.
+                </Attribute>
+            </Collapse>
+        </Attribute>
+    </Collapse>
+</Attribute>
+<Attribute text="pending" type="array of dictionaries">
+Funds that aren’t available in the balance yet. You can find the pending balance for each currency and each payment type in the source_types property.
+</Attribute>
+<Attribute text="object" type="string">
+String representing the object’s type. Objects of the same type share the same Attribute.
+</Attribute>
+<Attribute text="connect_reserved" type="nullable array of dictionaries">
+Funds held due to negative balances on connected accounts where account.controller.requirement_collection is application, which includes Custom accounts. You can find the connect reserve balance for each currency and payment type in the source_types property.
+</Attribute>
+<Attribute text="instant_available" type="nullable array of dictionaries">
+String representing the object’s type. Objects of the same type share the same Attribute.
+</Attribute>
+<Attribute text="issuing" type="nullable dictionary">
+Funds that you can spend on your Issued Cards.
+    <Collapse>
+        <Attribute text="issuing.available" type="integer">
+        Funds that are available for use.
+            <Collapse>
+                <Attribute text="available.source_types.bank_account" type="nullable integer">
+                Amount for bank account.
+                </Attribute>
+                <Attribute text="available.source_types.bank_card" type="nullable integer">
+                Amount for card.
+                </Attribute>
+                <Attribute text="available.source_types.bank_fpx" type="nullable integer">
+                Amount for FPX.
+                </Attribute>
+            </Collapse>
+        </Attribute>
+    </Collapse>
+</Attribute>
+<Attribute text="livemode" type="boolean">
+Has the Attribute `true` if the object exists in live mode or the Attribute `false` if the object exists in test mode.
+</Attribute>
+
+
+### Object
+```json
+{
+  "object": "balance",
+  "available": [
+    {
+      "amount": 666670,
+      "currency": "usd",
+      "source_types": {
+        "card": 666670
+      }
+    }
+  ],
+  "connect_reserved": [
+    {
+      "amount": 0,
+      "currency": "usd"
+    }
+  ],
+  "livemode": false,
+  "pending": [
+    {
+      "amount": 61414,
+      "currency": "usd",
+      "source_types": {
+        "card": 61414
+      }
+    }
+  ]
+}
+```
+
+## Retrieve balance
+
+Retrieves the current account balance, based on the authentication that was used to make the request. For a sample request, see Accounting for negative balances.
+
+### Parameters
+
+No parameters.
+
+### Returns
+Returns a balance object for the account that was authenticated in the request.
+
+### Request
+
+<Tabs>
+  <TabItem label="cURL" icon="star">
+```bash
+curl https://api.stripe.com/v1/balance \
+  -u "sk_test_09l3shTSTKHYCzzZZsiLl2vA:"
+```
+  </TabItem>
+  <TabItem label="Stripe CLI" icon="moon">
+```bash
+stripe balance retrieve 
+```
+  </TabItem>
+  <TabItem label="Node.JS" icon="moon">
+```javascript
+// Set your secret key. Remember to switch to your live secret key in production.
+// See your keys here: https://dashboard.stripe.com/apikeys
+const stripe = require('stripe')('sk_test_09l3shTSTKHYCzzZZsiLl2vA');
+const balance = await stripe.balance.retrieve();
+```
+  </TabItem>
+</Tabs>
+
+### Response
+
+```json
+{
+  "object": "balance",
+  "available": [
+    {
+      "amount": 666670,
+      "currency": "usd",
+      "source_types": {
+        "card": 666670
+      }
+    }
+  ],
+  "connect_reserved": [
+    {
+      "amount": 0,
+      "currency": "usd"
+    }
+  ],
+  "livemode": false,
+  "pending": [
+    {
+      "amount": 61414,
+      "currency": "usd",
+      "source_types": {
+        "card": 61414
+      }
+    }
+  ]
+}
+```

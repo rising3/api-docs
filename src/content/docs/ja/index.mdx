@@ -1,0 +1,41 @@
+---
+title: API リファレンス
+description: A reference page in my new Starlight docs site.
+---
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Stripe API は REST を中心に構成されています。私たちの API は、予測可能なリソース指向の URL を持ち、フォームでエンコードされたリクエスト本文を受け入れ、JSON でエンコードされた応答を返し、標準の HTTP 応答コード、認証、および動詞を使用します。
+
+Stripe API はテスト モードで使用できます。これはライブ データに影響を与えたり、銀行ネットワークとやり取りしたりすることはありません。リクエストの認証に使用する API キーによって、リクエストがライブ モードかテスト モードかが決まります。
+
+Stripe API は一括更新をサポートしていません。リクエストごとに 1 つのオブジェクトのみを操作できます。
+
+新しいバージョンのリリースや機能の調整に伴い、Stripe API はアカウントごとに異なります。ログインして、テスト キーとデータを含むドキュメントを表示します。
+
+## まだ始めたばかりですか?
+
+開発クイックスタート ガイドをご覧ください。
+
+## 開発者ではないですか?
+
+Stripe のノーコード オプションやパートナーのアプリを使用して、Stripe を使い始めたり、Stripe アカウントをさらに活用したりできます。コードは必要ありません。
+
+## BASE URL
+
+<Tabs>
+  <TabItem label="PRODUCTION" icon="star">
+```
+https://api.strip.com/prod
+```
+  </TabItem>
+  <TabItem label="STAGING" icon="moon">
+```
+https://api.strip.com/stg
+```
+  </TabItem>
+  <TabItem label="DEVELOPMENT" icon="moon">
+```
+https://api.strip.com/dev
+```
+  </TabItem>
+</Tabs>

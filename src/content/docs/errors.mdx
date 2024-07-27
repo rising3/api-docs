@@ -1,0 +1,77 @@
+---
+title: Errors
+description: A reference page in my new Starlight docs site.
+---
+import { Badge, Tabs, TabItem } from '@astrojs/starlight/components';
+import Collapse from '@components/DaisyUiCollapse.astro';
+import Attribute from '@components/DaisyUiAttribute.astro';
+
+Stripe uses conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the `2xx` range indicate success. Codes in the `4xx` range indicate an error that failed given the information provided (e.g., a required parameter was omitted, a charge failed, etc.). Codes in the `5xx` range indicate an error with Stripe’s servers (these are rare).
+
+Some `4xx` errors that could be handled programmatically (e.g., a card is declined) include an error code that briefly explains the error reported.
+
+## Attributes
+
+<Attribute text="type" type="enum">
+The type of error returned. One of `api_error`, `card_error`, `idempotency_error`, or `invalid_request_error`
+</Attribute>
+<Attribute text="code" type="nullable string">
+For some errors that could be handled programmatically, a short string indicating the error code reported.
+</Attribute>
+<Attribute text="decline_code" type="nullable string">
+For card errors resulting from a card issuer decline, a short string indicating the card issuer’s reason for the decline if they provide one.
+</Attribute>
+<Attribute text="message" type="nullable string">
+A human-readable message providing more details about the error. For card errors, these messages can be shown to your users.
+</Attribute>
+<Attribute text="param" type="nullable string">
+If the error is parameter-specific, the parameter related to the error. For example, you can use this to display a message near the correct form field.
+</Attribute>
+<Attribute text="payment_intent" type="nullable dictionary">
+The PaymentIntent object for errors returned on a request involving a PaymentIntent.
+</Attribute>
+<Attribute text="charge" type="nullable string">
+For card errors, the ID of the failed charge.
+</Attribute>
+<Attribute text="payment_method_type" type="nullable string">
+If the error is specific to the type of payment method, the payment method type that had a problem. This field is only populated for invoice-related errors.
+</Attribute>
+<Attribute text="doc_url" type="nullable string">
+A URL to more information about the error code reported.
+</Attribute>
+<Attribute text="request_log_url" type="nullable string">
+A URL to the request log entry in your dashboard.
+</Attribute>
+<Attribute text="setup_intent" type="nullable dictionary">
+The SetupIntent object for errors returned on a request involving a SetupIntent.
+</Attribute>
+<Attribute text="source" type="nullable dictionary">
+The source object for errors returned on a request involving a source.
+</Attribute>
+<Attribute text="payment_method" type="nullable dictionary">
+The PaymentMethod object for errors returned on a request involving a PaymentMethod.
+</Attribute>
+
+### HTTP STATUS CODE SUMMARY
+
+ CODE | STATUS | DESCRIPTION
+--- | --- | ---
+200 | OK | Everything worked as expected.
+400 | Bad Request | unacceptable, often due to missing a required parameter.
+401 | Unauthorized | No valid API key provided.
+402 | Request Failed | The parameters were valid but the request failed.
+403 | Forbidden | The API key doesn’t have permissions to perform the request.
+404 | Not Found | The requested resource doesn’t exist.
+409 | Conflict | The request conflicts with another request (perhaps due to using the same idempotent key).
+429 | Too Many Requests | Too many requests hit the API too quickly. We recommend an exponential backoff of your requests.
+500, 502, 503, 504 | Server Errors | Something went wrong on Stripe’s end. (These are rare.)
+
+### ERROR TYPES
+
+TYPE | DESCRIPTION
+--- | ---
+`api_error` | API errors cover any other type of problem (e.g., a temporary problem with Stripe’s servers), and are extremely uncommon.
+`card_error` | Card errors are the most common type of error you should expect to handle. They result when the user enters a card that can’t be charged for some reason.
+`idempotency_error` | dempotency errors occur when an Idempotency-Key is re-used on a request that does not match the first request’s API endpoint and parameters.
+`invalid_request_error` | Invalid request errors arise when your request has invalid parameters.
+

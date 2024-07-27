@@ -1,0 +1,246 @@
+---
+title: Charges
+description: A reference page in my new Starlight docs site.
+---
+import { Badge, Tabs, TabItem } from '@astrojs/starlight/components';
+import Collapse from '@components/DaisyUiCollapse.astro';
+import Attribute from '@components/DaisyUiAttribute.astro';
+
+The Charge object represents a single attempt to move money into your Stripe account. PaymentIntent confirmation is the most common way to create Charges, but transferring money to a different Stripe account through Connect also creates Charges. Some legacy payment flows create Charges directly, which is not recommended for new integrations.
+
+Was this section helpful?
+Yes
+No
+
+## Endpoints
+
+<div style="width:100px">METHOD</div> | <div style="width:400px">PATH</div>
+---: | ---
+POST | /v1/charges
+POST | /v1/charges/:id
+GET | /v1/charges
+GET | /v1/charges/:id
+POST | /v1/charges/:id/capture
+GET | /v1/charges/search
+
+## The Charges Object
+
+### Attributes
+
+<Attribute text="id" type="string">
+Unique identifier for the object.
+</Attribute>
+<Attribute text="amount" type="integer">
+Amount intended to be collected by this payment. A positive integer representing how much to charge in the smallest currency unit (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency). The minimum amount is $0.50 US or equivalent in charge currency. The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
+</Attribute>
+<Attribute text="balance_transaction" type="nullable string">
+ID of the balance transaction that describes the impact of this charge on your account balance (not including refunds or disputes).
+</Attribute>
+<Attribute text="billing_details" type="object">
+Billing information associated with the payment method at the time of the transaction.
+  <Collapse>
+    <Attribute text="billing_details.address" type="nullable object">
+    Billing address.
+    </Attribute>
+    <Collapse>
+      <Attribute text="billing_details.address.city" type="nullable string">
+      City, district, suburb, town, or village.
+      </Attribute>
+      <Attribute text="billing_details.address.country" type="nullable string">
+      Two-letter country code (ISO 3166-1 alpha-2).
+      </Attribute>
+    </Collapse>
+    <Attribute text="billing_details.email" type="nullable string">
+    Email address.
+    </Attribute>
+    <Attribute text="billing_details.name" type="nullable string">
+    Full name.
+    </Attribute>
+    <Attribute text="billing_details.phone" type="nullable string">
+    Billing phone number (including extension).
+    </Attribute>
+  </Collapse>
+</Attribute>
+<Attribute text="currency" type="enum">
+Three-letter ISO currency code, in lowercase. Must be a supported currency.
+</Attribute>
+
+### Object
+```json
+{
+  "id": "ch_3MmlLrLkdIwHu7ix0snN0B15",
+  "object": "charge",
+  "amount": 1099,
+  "amount_captured": 1099,
+  "amount_refunded": 0,
+  "application": null,
+  "application_fee": null,
+  "application_fee_amount": null,
+  "balance_transaction": "txn_3MmlLrLkdIwHu7ix0uke3Ezy",
+  "billing_details": {
+    "address": {
+      "city": null,
+      "country": null,
+      "line1": null,
+      "line2": null,
+      "postal_code": null,
+      "state": null
+    },
+    "email": null,
+    "name": null,
+    "phone": null
+  },
+  "calculated_statement_descriptor": "Stripe",
+  "captured": true,
+  "created": 1679090539,
+  "currency": "usd",
+  "customer": null,
+  "description": null,
+  "disputed": false,
+  "failure_balance_transaction": null,
+  "failure_code": null,
+  "failure_message": null,
+  "fraud_details": {},
+  "invoice": null,
+  "livemode": false,
+  "metadata": {},
+  "on_behalf_of": null,
+  "outcome": {
+    "network_status": "approved_by_network",
+    "reason": null,
+    "risk_level": "normal",
+    "risk_score": 32,
+    "seller_message": "Payment complete.",
+    "type": "authorized"
+  },
+  "paid": true,
+  "payment_intent": null,
+  "payment_method": "card_1MmlLrLkdIwHu7ixIJwEWSNR",
+  "payment_method_details": {
+    "card": {
+      "brand": "visa",
+      "checks": {
+        "address_line1_check": null,
+        "address_postal_code_check": null,
+        "cvc_check": null
+      },
+      "country": "US",
+      "exp_month": 3,
+      "exp_year": 2024,
+      "fingerprint": "mToisGZ01V71BCos",
+      "funding": "credit",
+      "installments": null,
+      "last4": "4242",
+      "mandate": null,
+      "network": "visa",
+      "three_d_secure": null,
+      "wallet": null
+    },
+    "type": "card"
+  },
+  "receipt_email": null,
+  "receipt_number": null,
+  "receipt_url": "https://pay.stripe.com/receipts/payment/CAcaFwoVYWNjdF8xTTJKVGtMa2RJd0h1N2l4KOvG06AGMgZfBXyr1aw6LBa9vaaSRWU96d8qBwz9z2J_CObiV_H2-e8RezSK_sw0KISesp4czsOUlVKY",
+  "refunded": false,
+  "review": null,
+  "shipping": null,
+  "source_transfer": null,
+  "statement_descriptor": null,
+  "statement_descriptor_suffix": null,
+  "status": "succeeded",
+  "transfer_data": null,
+  "transfer_group": null
+}
+```
+
+## Create a charge
+<Badge text="Deprecated" variant="danger" />
+This method is no longer recommended—use the Payment Intents API to initiate a new payment instead. Confirmation of the PaymentIntent creates the Charge object used to request payment.
+
+### Parameters
+<Attribute text="amount" type="integer" required="true">
+Amount intended to be collected by this payment. A positive integer representing how much to charge in the smallest currency unit (e.g., 100 cents to charge $1.00 or 100 to charge ¥100, a zero-decimal currency). The minimum amount is $0.50 US or equivalent in charge currency. The amount value supports up to eight digits (e.g., a value of 99999999 for a USD charge of $999,999.99).
+</Attribute>
+<Attribute text="currency" type="enum" required="true">
+Three-letter ISO currency code, in lowercase. Must be a supported currency.
+</Attribute>
+<Attribute text="customer" type="string">
+The ID of an existing customer that will be charged in this request.
+</Attribute>
+<Attribute text="description" type="string">
+An arbitrary string which you can attach to a `Charge` object. It is displayed when in the web interface alongside the charge. Note that if you use Stripe to send automatic email receipts to your customers, your receipt emails will include the `description` of the charge(s) that they are describing.
+</Attribute>
+<Attribute text="metadata" type="object">
+Set of key-value pairs that you can attach to an object. This can be useful for storing additional information about the object in a structured format. Individual keys can be unset by posting an empty value to them. All keys can be unset by posting an empty value to `metadata`.
+</Attribute>
+<Attribute text="receipt_email" type="string">
+The email address to which this charge’s receipt will be sent. The receipt will not be sent until the charge is paid, and no receipts will be sent for test mode charges. If this charge is for a Customer, the email address specified here will override the customer’s email address. If `receipt_email` is specified for a charge in live mode, a receipt will be sent regardless of your email settings.
+</Attribute>
+
+### Returns
+Returns a balance object for the account that was authenticated in the request.
+
+### Request
+
+<Tabs>
+  <TabItem label="cURL" icon="star">
+```bash
+curl https://api.stripe.com/v1/charges \
+  -u "sk_test_09l3shTSTKHYCzzZZsiLl2vA:" \
+  -d amount=1099 \
+  -d currency=usd \
+  -d source=tok_visa
+```
+  </TabItem>
+  <TabItem label="Stripe CLI" icon="moon">
+```bash
+stripe charges create  \
+  --amount=1099 \
+  --currency=usd \
+  --source=tok_visa
+```
+  </TabItem>
+  <TabItem label="Node.JS" icon="moon">
+```javascript
+const stripe = require('stripe')('sk_test_09l3shTSTKHYCzzZZsiLl2vA');
+const charge = await stripe.charges.create({
+  amount: 1099,
+  currency: 'usd',
+  source: 'tok_visa',
+});
+```
+  </TabItem>
+</Tabs>
+
+### Response
+
+```json
+{
+  "object": "balance",
+  "available": [
+    {
+      "amount": 666670,
+      "currency": "usd",
+      "source_types": {
+        "card": 666670
+      }
+    }
+  ],
+  "connect_reserved": [
+    {
+      "amount": 0,
+      "currency": "usd"
+    }
+  ],
+  "livemode": false,
+  "pending": [
+    {
+      "amount": 61414,
+      "currency": "usd",
+      "source_types": {
+        "card": 61414
+      }
+    }
+  ]
+}
+```

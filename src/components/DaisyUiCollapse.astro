@@ -1,0 +1,12 @@
+---
+const { text } = Astro.props;
+---
+
+<details class="collapse bg-secondary text-base ml-2">
+	<summary class="collapse-title">
+      <span class="badge badge-outline">{ text ? text : "Details..." }</span>
+    </summary>
+    <div class="collapse-content">
+      <slot/>
+    </div>
+</details>
